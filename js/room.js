@@ -1,3 +1,7 @@
+let mediaRecorder;
+let recordedChunks = [];
+
+
 let messagesContainer = document.getElementById('messages');
 messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
@@ -71,5 +75,52 @@ let hideDisplayFrame = () => {
     videoFrames[i].style.width = '300px'
    }
   }
+
+
+  
+
+  
+  function startRecording(stream) {
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = handleDataAvailable;
+    mediaRecorder.start();
+  }
+
+  function handleDataAvailable(event) {
+   if (event.data.size > 0) {
+        recordedChunks.push(event.data);
+    }
+  }
+
+
+  function stopRecording() {
+   mediaRecorder.stop();
+    mediaRecorder.onstop = () => {
+       const blob = new Blob(recordedChunks, {
+           type: 'video/webm'
+        });
+        const url = URL.createObjectURL(blob);
+       const a = document.createElement('a');
+        document.body.appendChild(a);
+        a.style = 'display: none';
+        a.href = url;
+        a.download = 'test.webm';
+        a.click();
+        window.URL.revokeObjectURL(url);
+    };
+  }
+
+  document.getElementById('start-recording').addEventListener('click', () => {
+    // Assuming `localTracks` contains the video and audio tracks
+   const stream = new MediaStream([...localTracks.map(track => track.getMediaStreamTrack())]);
+   startRecording(stream);
+ });
+
+  document.getElementById('stop-recording').addEventListener('click', stopRecording);
+
+
+
+
+
 
 displayFrame.addEventListener('click', hideDisplayFrame)

@@ -11,7 +11,7 @@ let token = null;
 let client;
 
 let rtmClient ;
-let channel;
+let channel; 
 
 
 //room.html?room=234

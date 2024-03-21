@@ -125,6 +125,7 @@ let leaveChannel = async() => {
     await rtmClient.logout()
 }
 
+
 window.addEventListener('beforeunload', leaveChannel)
 let messageForm = document.getElementById('message__form')
 messageForm.addEventListener('submit', sendMessage)
